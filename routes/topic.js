@@ -5,10 +5,18 @@ const validateReqBody = require("../utils/validateReqBody");
 
 // Handle http request
 
+// Get all topics
+router.get("/", async (req, res) => {
+  const topics = await Topic.find()
+    .populate("menus", "name -_id")
+    .sort("-count name");
+  res.send(topics);
+});
+
 // Get hot (top 6) topics
 router.get("/hot", async (req, res) => {
   const topics = await Topic.find()
-    .populate("menus")
+    .populate("menus", "name -_id")
     .sort("-count name")
     .limit(6);
   res.send(topics);

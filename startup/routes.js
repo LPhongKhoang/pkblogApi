@@ -4,7 +4,7 @@ const express = require("express");
 // ...
 const menuRoute = require("../routes/menu");
 const topicRoute = require("../routes/topic");
-
+const postRoute = require("../routes/post");
 
 // import function catch error
 const error = require("../middleware/error");
@@ -20,6 +20,7 @@ module.exports = function(app) {
   // api end point
   app.use("/api/menu", menuRoute);
   app.use("/api/topic", topicRoute);
+  app.use("/api/post", postRoute);
   // ....
   app.use("/", (req, res)=>res.send("xxx PK xxx"));
   // catch error in express pipeline

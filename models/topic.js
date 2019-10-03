@@ -31,7 +31,7 @@ function validate(topic) {
       Joi.string()
         .pattern(/^[0-9a-fA-F]{24}$/)
         .required()
-    ),
+    ).required(),
     count: Joi.number().min(0)
   });
   return schema.validate(topic);
