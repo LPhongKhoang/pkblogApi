@@ -1,5 +1,6 @@
 {
   "db": "mongodb+srv://<username>:<password>@cluster0-iapls.mongodb.net/pkblog?retryWrites=true&w=majority",
   "dbUsername": "",
-  "dbUserPassword": ""
+  "dbUserPassword": "",
+  "itemsPerPage": 3
 }

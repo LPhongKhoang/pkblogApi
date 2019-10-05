@@ -4,6 +4,7 @@ const Joi = require("@hapi/joi");
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
+    unique: true,
     required: true,
     minlength: 3,
     maxlength: 60

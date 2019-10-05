@@ -1,5 +1,6 @@
 {
   "db": "mongodb://localhost/pkblog",
   "dbUsername": "",
-  "dbUserPassword": ""
+  "dbUserPassword": "",
+  "itemsPerPage": 3
 }

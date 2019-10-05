@@ -16,9 +16,9 @@ router.get("/", async (req, res) => {
 // Get hot (top 6) topics
 router.get("/hot", async (req, res) => {
   const topics = await Topic.find()
-    .populate("menus", "name -_id")
     .sort("-count name")
-    .limit(6);
+    .limit(6)
+    .select("name -_id");
   res.send(topics);
 });
 

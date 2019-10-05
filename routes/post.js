@@ -1,43 +1,80 @@
 const router = require("express").Router();
+const config = require("config");
 const _ = require("lodash");
 const { Post, validate } = require("../models/post");
 const { Topic } = require("../models/topic");
+const { Menu } = require("../models/menu");
 const validateReqBody = require("../utils/validateReqBody");
+const { regexEqualIgnorecase } = require("../utils/helper");
 
+const itemsPerPage = config.get("itemsPerPage");
 // Handle http request
-// all post
 
-// Get all posts order by
+// Get hot post top 5
+router.get("/hot", async (req, res) => {
+  const posts = await Post.find().sort("-viewTime title").limit(5).select("title -_id");
+  res.send(posts);
+});
+
+// Get post
+router.get("/:title", async (req, res) => {
+  const title = req.params.title;
+  const post = await Post.findOne({title: regexEqualIgnorecase(title)});
+  // increase viewTime if post exist (also increase count of post Topic)
+  if(post) {
+    // neccessary to use Transaction
+    post.viewTime += 1;
+    await post.save();
+
+    await Topic.updateMany({_id: {$in: post.topics}}, {
+      $inc: {count: 1}
+    });
+  }
+  res.send(post);
+});
+
+// Get all posts with each filter condition order by "-createDate title"
 router.post("/filter", async (req, res) => {
-  const page = req.body.page || 1;
+  const page = _.toNumber(req.body.page) || 1;
 
-  const { searchText, tag, type, id } = req.body;
+  const { searchText, tag, type, name } = req.body;
 
   let posts = [];
-  let p = Post.find();
-  p.exec()
+  let filter = {};
 
   if (searchText) {
-    posts = await Post.find({ title: new RegExp(searchText, "i") }).sort(
-      "-createDate title"
-    );
+    filter = { title: new RegExp(searchText, "i") };
   } else if (tag) {
-    posts = await Post.find({ tags: tag }).sort("-createDate title");
-  } else if (type && id) {
+    filter = { tags: tag };
+  } else if (type && name) {
     if (type === "topic") {
-      posts = await Post.find({ topics: id }).sort("-createDate title");
+      const topicId = await Topic.findOne({
+        name: regexEqualIgnorecase(name)
+      }).select("_id");
+      filter = { topics: topicId };
     } else if (type === "menu") {
-      const topics = await Topic.find({ menus: id }).select("_id");
-
-      posts = await Post.find({ topics: { $all: topics } }).sort(
-        "-createDate title"
-      );
+      const menuId = await Menu.findOne({
+        name: regexEqualIgnorecase(name)
+      }).select("_id");
+      const topics = await Topic.find({ menus: menuId }).select("_id");
+      filter = { topics: { $in: topics } };
+    } else {
+      return res.send("Wrong type");
     }
-  } else {
-    posts = await Post.find().sort("-createDate title");
   }
 
-  res.send(posts);
+  const numPosts = await Post.countDocuments(filter);
+  const maxPage = Math.ceil(numPosts/itemsPerPage);
+  if(page < 1 || page > maxPage ){
+    return res.send({posts: {}, maxPage: 0});
+  }
+  posts = await Post.find(filter)
+    .sort("-createDate title")
+    .skip((page - 1) * itemsPerPage)
+    .limit(itemsPerPage)
+    .select("-topics -viewTiem -content");
+  
+  res.send({posts, maxPage});
 });
 
 // Create a menu
