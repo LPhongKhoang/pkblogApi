@@ -1,0 +1,3 @@
+{"_id":{"$oid":"5d93228067a85d405092d89c"},"name":"Front end","order":{"$numberInt":"1"},"__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5d9322a967a85d405092d89d"},"name":"Tip Javascript","order":{"$numberInt":"3"},"__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5d9322b367a85d405092d89e"},"name":"Back end","order":{"$numberInt":"2"},"__v":{"$numberInt":"0"}}
