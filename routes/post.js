@@ -12,14 +12,14 @@ const itemsPerPage = config.get("itemsPerPage");
 
 // Get hot post top 5
 router.get("/hot", async (req, res) => {
-  const posts = await Post.find().sort("-viewTime title").limit(5).select("title -_id");
+  const posts = await Post.find().sort("-viewTime title").limit(5).select("title slug -_id");
   res.send(posts);
 });
 
 // Get post
-router.get("/:title", async (req, res) => {
-  const title = req.params.title;
-  const post = await Post.findOne({title: regexEqualIgnorecase(title)});
+router.get("/:slug", async (req, res) => {
+  const slug = req.params.slug;
+  const post = await Post.findOne({slug: regexEqualIgnorecase(slug)});
   // increase viewTime if post exist (also increase count of post Topic)
   if(post) {
     // neccessary to use Transaction
@@ -37,7 +37,7 @@ router.get("/:title", async (req, res) => {
 router.post("/filter", async (req, res) => {
   const page = _.toNumber(req.body.page) || 1;
 
-  const { searchText, tag, type, name } = req.body;
+  const { searchText, tag, type, slug } = req.body;
 
   let posts = [];
   let filter = {};
@@ -46,15 +46,15 @@ router.post("/filter", async (req, res) => {
     filter = { title: new RegExp(searchText, "i") };
   } else if (tag) {
     filter = { tags: tag };
-  } else if (type && name) {
+  } else if (type && slug) {
     if (type === "topic") {
       const topicId = await Topic.findOne({
-        name: regexEqualIgnorecase(name)
+        slug: regexEqualIgnorecase(slug)
       }).select("_id");
       filter = { topics: topicId };
     } else if (type === "menu") {
       const menuId = await Menu.findOne({
-        name: regexEqualIgnorecase(name)
+        slug: regexEqualIgnorecase(slug)
       }).select("_id");
       const topics = await Topic.find({ menus: menuId }).select("_id");
       filter = { topics: { $in: topics } };
@@ -72,7 +72,7 @@ router.post("/filter", async (req, res) => {
     .sort("-createDate title")
     .skip((page - 1) * itemsPerPage)
     .limit(itemsPerPage)
-    .select("-topics -viewTiem -content");
+    .select("-topics -viewTime -content");
   
   res.send({posts, maxPage});
 });
@@ -84,6 +84,7 @@ router.post("/", async (req, res) => {
   const post = new Post(
     _.pick(req.body, [
       "title",
+      "slug",
       "topics",
       "shortDes",
       "createDate",
@@ -93,7 +94,7 @@ router.post("/", async (req, res) => {
     ])
   );
   await post.save();
-  res.send(post);
+  res.send(_.pick(post, "-_id -content"));
 });
 
 module.exports = router;

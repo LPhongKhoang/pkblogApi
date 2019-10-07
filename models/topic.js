@@ -9,6 +9,13 @@ const topicSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 30
   },
+  slug: {
+    type: String,
+    unique: true,
+    minlength: 5,
+    maxlength: 50,
+    required: true
+  },
   menus: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Menu" }
   ],

@@ -9,6 +9,13 @@ const postSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 60
   },
+  slug: {
+    type: String,
+    unique: true,
+    minlength: 5,
+    maxlength: 50,
+    required: true
+  },
   topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }],
   shortDes: {
     type: String,

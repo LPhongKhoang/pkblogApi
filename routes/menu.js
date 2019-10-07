@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   validateReqBody(validate, req.body);
 
-  const menu = new Menu(_.pick(req.body, ["name", "order"]));
+  const menu = new Menu(_.pick(req.body, ["name", "slug", "order"]));
   await menu.save();
   res.send(menu);
 });

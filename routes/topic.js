@@ -18,7 +18,7 @@ router.get("/hot", async (req, res) => {
   const topics = await Topic.find()
     .sort("-count name")
     .limit(6)
-    .select("name -_id");
+    .select("name slug -_id");
   res.send(topics);
 });
 
@@ -26,9 +26,9 @@ router.get("/hot", async (req, res) => {
 router.post("/", async (req, res) => {
   validateReqBody(validate, req.body);
 
-  const topic = new Topic(_.pick(req.body, ["name", "menus", "count"]));
+  const topic = new Topic(_.pick(req.body, ["name", "slug", "menus", "count"]));
   await topic.save();
-  res.send(_.pick(topic, ["name", "count"]));
+  res.send(_.pick(topic, ["name", "slug", "count"]));
 });
 
 module.exports = router;
