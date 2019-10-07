@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Fawn = require("fawn");
 const winston = require("winston");
 const config = require("config");
 
@@ -23,4 +24,5 @@ module.exports = function() {
       // winston.info(`Connected to ${db}...`);
       console.log(`Connected to ${db}...`);
     });
+  Fawn.init(mongoose);
 };

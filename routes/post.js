@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const Fawn = require("fawn");
 const config = require("config");
 const _ = require("lodash");
 const { Post, validate } = require("../models/post");
@@ -12,23 +13,23 @@ const itemsPerPage = config.get("itemsPerPage");
 
 // Get hot post top 5
 router.get("/hot", async (req, res) => {
-  const posts = await Post.find().sort("-viewTime title").limit(5).select("title slug -_id");
+  const posts = await Post.find()
+    .sort("-viewTime title")
+    .limit(5)
+    .select("title slug -_id");
   res.send(posts);
 });
 
 // Get post
-router.get("/:slug", async (req, res) => {
+router.get("/details/:slug", async (req, res) => {
   const slug = req.params.slug;
-  const post = await Post.findOne({slug: regexEqualIgnorecase(slug)});
+  const post = await Post.findOne({ slug: regexEqualIgnorecase(slug) });
   // increase viewTime if post exist (also increase count of post Topic)
-  if(post) {
-    // neccessary to use Transaction
-    post.viewTime += 1;
-    await post.save();
-
-    await Topic.updateMany({_id: {$in: post.topics}}, {
-      $inc: {count: 1}
-    });
+  if (post) {
+    const results = await Fawn.Task()
+      .update("posts", {_id: post._id}, {$inc: {viewTime: 1}})
+      .update("topics", {_id: {$in: post.topics}}, {$inc: {count: 1}})
+      .run();
   }
   res.send(post);
 });
@@ -64,17 +65,17 @@ router.post("/filter", async (req, res) => {
   }
 
   const numPosts = await Post.countDocuments(filter);
-  const maxPage = Math.ceil(numPosts/itemsPerPage);
-  if(page < 1 || page > maxPage ){
-    return res.send({posts: {}, maxPage: 0});
+  const maxPage = Math.ceil(numPosts / itemsPerPage);
+  if (page < 1 || page > maxPage) {
+    return res.send({ posts: {}, maxPage: 0 });
   }
   posts = await Post.find(filter)
-    .sort("-createDate title")
+    .sort("-createDate -viewTime title")
     .skip((page - 1) * itemsPerPage)
     .limit(itemsPerPage)
     .select("-topics -viewTime -content");
-  
-  res.send({posts, maxPage});
+
+  res.send({ posts, maxPage });
 });
 
 // Create a menu
