@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test_mocha": "mocha --recursive --watch"
   },
   "author": "phong khoang",
   "license": "MIT",
   "dependencies": {
     "@hapi/joi": "^16.1.4",
+    "chai": "^4.2.0",
     "compression": "^1.7.4",
     "config": "^3.2.2",
     "cors": "^2.8.5",

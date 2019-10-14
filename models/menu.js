@@ -34,6 +34,10 @@ function validate(menu) {
       .min(3)
       .max(30)
       .required(),
+    slug: Joi.string()
+      .min(5)
+      .max(50)
+      .required(),
     order: Joi.number()
       .min(1)
       .max(10)
