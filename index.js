@@ -15,6 +15,6 @@ if(process.env.NODE_ENV === "production")
 const port = process.env.PORT || 3009;
 const server = app.listen(port, () => {
   // winston.info(`Server BlogPK: started at port ${port}`);
-  console.log(`Server BlogPK: started at port ${port}`);
+  console.log(`Server BlogPK: started at port $ {port}`);
   });
 module.exports = server;
