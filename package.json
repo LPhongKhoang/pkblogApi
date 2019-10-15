@@ -8,11 +8,13 @@
     "test": "jest --watch",
     "test_mocha": "mocha --recursive --watch"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "phong khoang",
   "license": "MIT",
   "dependencies": {
     "@hapi/joi": "^16.1.4",
-    "chai": "^4.2.0",
     "compression": "^1.7.4",
     "config": "^3.2.2",
     "cors": "^2.8.5",
@@ -25,6 +27,8 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1"
   }
 }

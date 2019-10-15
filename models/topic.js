@@ -26,7 +26,13 @@ const topicSchema = new mongoose.Schema({
   }
 });
 
-const Topic = mongoose.model("Topic", topicSchema);
+let Topic;
+
+try {
+  Topic = mongoose.model("Topic");
+} catch (error) {
+  Topic = mongoose.model("Topic", topicSchema);
+}
 
 // function validate data on request
 function validate(topic) {

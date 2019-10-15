@@ -25,7 +25,13 @@ const menuSchema = new mongoose.Schema({
 });
 
 
-const Menu = mongoose.model("Menu", menuSchema);
+let Menu;
+try {
+  Menu = mongoose.model("Menu");
+} catch (error) {
+  Menu = mongoose.model("Menu", menuSchema);
+}
+
 
 // function validate data on request
 function validate(menu) {
