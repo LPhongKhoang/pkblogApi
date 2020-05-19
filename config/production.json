@@ -2,5 +2,11 @@
   "db": "mongodb+srv://<username>:<password>@cluster0-iapls.mongodb.net/pkblog?retryWrites=true&w=majority",
   "dbUsername": "",
   "dbUserPassword": "",
-  "itemsPerPage": 3
+  "itemsPerPage": 3,
+  "redirect_uri": "https://pkblog-api.herokuapp.com/api/login/callback",
+  "client_id": "6ab8631776214feb87ab",
+  "client_secret": "",
+  "authorization_endpoint": "https://github.com/login/oauth/authorize",
+  "token_endpoint": "https://github.com/login/oauth/access_token",
+  "requested_scopes": "openid"
 }

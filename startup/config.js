@@ -1,8 +1,7 @@
 const config = require("config");
 
-module.exports = function() {
+module.exports = function () {
   if (process.env.NODE_ENV === "production") {
-    
     if (!config.get("jwtSecretKey")) {
       throw new Error("FATAL ERROR: pkblog_jwtSecretKey is not set"); // longpkprojwt@1
     }
@@ -12,5 +11,9 @@ module.exports = function() {
     if (!config.get("dbUserPassword")) {
       throw new Error("FATAL ERROR: pkblog_db_user_password is not set");
     }
+  }
+
+  if (!config.get("client_secret")) {
+    throw new Error("FATAL ERROR: pkblog_clientSecret is not set");
   }
 };

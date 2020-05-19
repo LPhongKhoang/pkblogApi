@@ -1,5 +1,6 @@
 {
   "jwtSecretKey": "pkblog_jwtSecretKey",
   "dbUsername": "pkblog_db_user_name",
-  "dbUserPassword": "pkblog_db_user_password"
+  "dbUserPassword": "pkblog_db_user_password",
+  "client_secret": "pkblog_clientSecret"
 }
